@@ -5,9 +5,11 @@ export const RecipeGenerator = () => {
     const [cuisine, setCuisine] = useState("");
     const [dietaryRestrictions, setDietaryRestrictions] = useState("");
     const [recipe, setRecipe] = useState("");
-
+    const [loading, setLoading] = useState(false); 
     const createRecipe = async () => {
         try {
+            setLoading(true); 
+            setRecipe(""); 
             const response = await fetch(`https://recipe-generator-s00u.onrender.com/api/recipes/generate?ingredients=${ingredients}&cuisine=${cuisine}&dietaryRestrictions=${dietaryRestrictions}`);
 
             if (!response.ok) {
@@ -19,6 +21,8 @@ export const RecipeGenerator = () => {
         } catch (error) {
             console.error("Error generating recipe:", error);
             setRecipe("Failed to generate recipe. Please try again.");
+        } finally {
+            setLoading(false); 
         }
     };
 
@@ -50,7 +54,11 @@ export const RecipeGenerator = () => {
             <button onClick={createRecipe}>Create</button>
 
             <div className='output'>
-                <pre className='recipe-text'>{recipe}</pre>
+                {loading ? (
+                    <pre className='recipe-text'>Please wait until the chef responds...</pre>
+                ) : (
+                    <pre className='recipe-text'>{recipe}</pre>
+                )}
             </div>
         </div>
     );
